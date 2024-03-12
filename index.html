@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <title>API - Desafio</title>
+    </head>
+    <body>
+        <h1 class="mb-3 pb-3 pt-5 text-center bg-warning text-white display-5"><strong>API - COTAÇÃO 💰​</strong></h1>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <form class="text-center">
+                        <div class="form-floating input-group mb-3">
+                            <span class="input-group-text">R$</span>
+                            <input class="form-control fs-1 pb-4" type="number" step="0.01" name="idade" id="real" autofocus>
+                            <!-- <label for="real">Valor em Real</label> -->
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-outline-warning mb-3 col-lg-12 text-outline" onclick="validar()">Calcular</button> 
+                    <!-- funcao validar para verificar se o campo esta preenchido  -->
+                </div>
+            </div>
+        
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="form-floating input-group mb-3">
+                        <span class="input-group-text">US$</span>
+                        <input class="form-control fs-3 pb-4" type="number" step="0.01" id="dolar" name="numero" disabled required>
+                        <!-- <label for="dolar" class="m-1">Valor em Dólar</label> -->
+                    </div>
+
+                    <div class="form-floating input-group mb-3">
+                        <span class="input-group-text">€</span>
+                        <input class="form-control fs-3 pb-4" type="number" step="0.01" id="euro" name="numero" disabled required>
+                        <!-- <label for="dolar" class="m-1">Valor em Euro</label> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+          
+        <script>
+            //funcao baseada no exemplo API de ceps - classroom 
+            async function cotacao() {
+                const realInput = document.getElementById("real").value
+                const dolarInput = document.getElementById("dolar")
+                const euroInput = document.getElementById("euro")
+                try {
+                    const response = await fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL')
+                    const data = await response.json()
+                
+                    const cotacaoDolar = parseFloat(data.USDBRL.bid)
+                    const cotacaoEuro = parseFloat(data.EURBRL.bid)
+                
+                    const valorDolar = (realInput / cotacaoDolar).toFixed(2)
+                    // toFixed para deixar em duas casas decimais 
+                    const valorEuro = (realInput / cotacaoEuro).toFixed(2)
+                
+                    dolarInput.value = valorDolar
+                    euroInput.value = valorEuro
+                
+                } catch (error) {
+                    console.error('Erro ao obter as cotações:', error)
+                }
+            }
+            //funcao ja usada em atividades anteriores
+            function validar() {
+                const realInput = document.getElementById("real").value
+                if (realInput.trim() === "") {
+                    alert("Por favor, insira um valor em R$ (real)!")
+                } else {
+                    // se o formulario for preeenchido chama a funcao cotacao para converter o valor de real para dolares e euro
+                    cotacao()
+                }
+            }
+        </script>
+
+    </body>
+</html>
